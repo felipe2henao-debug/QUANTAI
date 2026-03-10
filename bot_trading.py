@@ -252,7 +252,6 @@ Hora: {datetime.now().strftime("%Y-%m-%d %H:%M")} UTC
 📊 *METRICAS CLAVE*
 Precio BTC : `${precio:,.2f}`
 RSI (1h)   : `{rsi:.1f}`
-Senal      : *{accion}*
 F&G Index  : _{macro}_
 
 🧠 *ANALISIS IA*
