@@ -1,0 +1,39 @@
+name: 🧠 Bot Trading BTC
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ejecutar-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias
+        run: pip install ccxt pandas numpy matplotlib google-genai requests
+
+      - name: Ejecutar bot
+        env:
+          API_KEY_GEMINI:   ${{ secrets.API_KEY_GEMINI }}
+          TELEGRAM_TOKEN:   ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python bot_trading.py
+
+      - name: Guardar bitacora
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bitacora-${{ github.run_number }}
+          path: Bitacora_Trading_IA.csv
+          retention-days: 30
+          if-no-files-found: ignore
