@@ -1,0 +1,10 @@
+# Archivos generados
+*.png
+*.csv
+__pycache__/
+*.pyc
+.env
+
+# No subir claves accidentalmente
+.env.local
+secrets.txt
