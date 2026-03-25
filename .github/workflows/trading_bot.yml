@@ -2,7 +2,7 @@ name: 🧠 Bot Trading BTC
  
 on:
   schedule:
-    - cron: '0 */1 * * *'   # Cada hora en punto — este ES el scheduler
+    - cron: '0 * * * *'   # Cada hora en punto — este ES el scheduler
   workflow_dispatch:          # Permite lanzar manualmente desde la UI
  
 jobs:
