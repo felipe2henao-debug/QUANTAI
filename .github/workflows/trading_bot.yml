@@ -1,34 +1,44 @@
 name: 🧠 Bot Trading BTC
-
+ 
 on:
   schedule:
-    - cron: '0 */1 * * *'
-  workflow_dispatch:
-
+    - cron: '0 */1 * * *'   # Cada hora en punto — este ES el scheduler
+  workflow_dispatch:          # Permite lanzar manualmente desde la UI
+ 
 jobs:
   ejecutar-bot:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
+ 
+    # Permiso para leer artifacts (necesario para descargar el historial CSV)
+    permissions:
+      actions: read
+      contents: read
+ 
     steps:
       - name: Clonar repositorio
         uses: actions/checkout@v4
-
+ 
       - name: Instalar Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
+ 
       - name: Instalar dependencias
         run: pip install ccxt pandas numpy matplotlib google-genai requests
-
+ 
       - name: Ejecutar bot
         env:
           API_KEY_GEMINI:   ${{ secrets.API_KEY_GEMINI }}
           TELEGRAM_TOKEN:   ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          # GH_TOKEN permite que el bot descargue el CSV del run anterior.
+          # Usa el token automático de Actions — no necesitas crear un secret manual.
+          GH_TOKEN:         ${{ secrets.GITHUB_TOKEN }}
         run: python bot_trading.py
-
+ 
+      # El CSV se sube SIEMPRE (incluso si hubo error) para no perder datos.
+      # El bot lo descargará al inicio del próximo run y tendrá continuidad.
       - name: Guardar bitacora
         if: always()
         uses: actions/upload-artifact@v4
